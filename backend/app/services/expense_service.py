@@ -1,6 +1,9 @@
 from datetime import datetime
 from uuid import uuid4
+
+# FIX BUG 1: Import db từ firebase_config (đã được export đúng)
 from app.core.firebase_config import db
+
 
 def create_expense(user_id, data):
     expense_id = str(uuid4())

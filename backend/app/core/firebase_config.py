@@ -20,3 +20,5 @@ def init_firebase_admin():
 def get_firestore():
     init_firebase_admin()
     return firestore.client()
+
+db = get_firestore()

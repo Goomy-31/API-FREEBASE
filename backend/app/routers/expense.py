@@ -5,9 +5,11 @@ from app.dependencies.auth import get_current_user
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
+
 @router.post("/")
 def create_expense(data: ExpenseCreate, user=Depends(get_current_user)):
     return expense_service.create_expense(user["uid"], data)
+
 
 @router.get("/")
 def get_expenses(user=Depends(get_current_user)):
