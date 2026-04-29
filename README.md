@@ -1,35 +1,48 @@
-# streamlit-chat
-
-A simple and extensible chat interface built with **Streamlit**.
-
-## 🚀 Features
-
-* Lightweight chat UI
-* **User authorization before chatting**
-* **Save and load chat data**
-* Stores chat history in session state
-* Easy to extend with any AI or backend API
-
-## 🧰 Requirements
-
-* Python 3.x
-* Streamlit
-* Other dependencies in `requirements.txt`
-
-## ⚙️ Installation
-
-```bash
-git clone https://github.com/Khoan-IT/streamlit-chat.git
-cd streamlit-chat
-pip install -r requirements.txt
-```
+# 📝 Lab 2: API-Firebase/ Ứng dụng quản lý chi tiêu
+### Thông tin sinh viên
+* ### Họ và Tên: Võ Văn Khánh Đăng
+* ### MSSV: 24120278
+* ### Lớp: 24CTT3
 
 
-## 🛠️ Customization
+* ### Đây là ứứng dụng quản lý chi tiêu của người dùng theo tháng
 
-Edit `*.py` to:
+## 🛠️ Hướng dẫn cài đặt Environment
 
-* Change UI elements (titles, avatars, layout)
-* Integrate with AI APIs (e.g., OpenAI, Hugging Face)
-* Modify authorization logic or data storage
-* Save chat logs to a file or database
+1. Clone dự án:
+   ```bash
+   git clone https://github.com/Ponnef/Lab2_API_Firebase_NoteApp
+   cd Lab2_API_Firebase_NoteApp
+   ```
+
+2. Cài đặt thư viện:
+   ``` bash
+   pip install -r requirements.txt
+   ```
+
+## Hướng dẫn chạy Backend
+1. Đảm bảo bạn đã có file `backend/serviceAccountKey.json` từ Firebase Console
+
+2. Di chuyển đến thư mục backend:
+   ```bash
+   cd backend
+   ```
+3. **Khởi chạy Server:**
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+## Hướng dẫn chạy Frontend
+
+1. Đảm bảo có file `frontend/.streamlit/secrets.toml` đã được cấu hình đầy đủ Client ID và API Key.
+
+2. **Di chuyển đến thư mục frontend:**
+   ```bash
+   cd frontend
+   ```
+3. **Khởi chạy ứng dụng:**
+   ```bash
+   streamlit run app.py
+   ```
+Ứng dụng sẽ tự động mở trên trình duyệt tại: http://localhost:8501
+
+### **🎥 Video demo

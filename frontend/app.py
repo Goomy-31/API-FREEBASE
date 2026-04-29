@@ -20,7 +20,9 @@ if "expenses" not in st.session_state:
 
 
 # ================== HELPER ==================
+
 def load_expenses():
+    
     try:
         # FIX: Backend trả về idToken trong response login
         data = get_expenses(st.session_state.user["idToken"])
@@ -28,6 +30,7 @@ def load_expenses():
     except Exception as e:
         st.error(f"Lỗi load dữ liệu: {e}")
         st.session_state.expenses = []
+    
 
 
 def clear_google_query_params():
@@ -195,23 +198,26 @@ if st.session_state.user:
             submit = st.form_submit_button("💾 Lưu chi tiêu", use_container_width=True)
 
         if submit:
+            #st.write("DEBUG:", st.session_state.user)  # ← thêm dòng này
             if amount <= 0:
                 st.warning("Vui lòng nhập số tiền lớn hơn 0.")
             else:
                 try:
                     create_expense(
-                        user["idToken"],
+                        st.session_state.user["idToken"],
                         {
                             "amount": float(amount),
                             "category": category,
-                            "note": note if note else None  # FIX: note optional, gửi None nếu trống
+                            "note": note if note else None
                         }
                     )
                     st.success("✅ Đã lưu chi tiêu!")
                     load_expenses()
                     st.rerun()
-                except Exception as e:
+                except Exception as e:          # ← phần này phải có
                     st.error(f"Lỗi lưu: {e}")
+        
+       
 
     # ================== TAB 2: THỐNG KÊ ==================
     with tab2:
