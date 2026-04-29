@@ -1,28 +1,21 @@
-import os
 import secrets
 from urllib.parse import urlencode
 
 import requests
+import streamlit as st
 from fastapi import APIRouter, HTTPException, Request, Depends
 from fastapi.responses import RedirectResponse
 from firebase_admin import auth as admin_auth
 
-from backend.app.schemas.auth import (
-    SignupRequest, LoginRequest, GoogleLoginRequest
-)
+from backend.app.schemas.auth import SignupRequest, LoginRequest, GoogleLoginRequest
 from backend.app.core.firebase_config import get_pyrebase_auth, init_firebase_admin
 from backend.app.dependencies.auth import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-auth_client = get_pyrebase_auth()
 init_firebase_admin()
 
-
-import streamlit as st
-
 google_cfg = st.secrets["google-login"]
-
 GOOGLE_URL = google_cfg["google-url"]
 GOOGLE_CLIENT_ID = google_cfg["google_client_id"]
 GOOGLE_CLIENT_SECRET = google_cfg["google_client_secret"]
@@ -32,9 +25,14 @@ FRONTEND_URL = google_cfg["frontend_url"]
 COOKIE_SECURE = google_cfg["cookie_secure"]
 
 
+def get_auth_client():
+    return get_pyrebase_auth()
+
+
 @router.post("/signup")
 def signup(payload: SignupRequest):
     try:
+        auth_client = get_auth_client()
         auth_client.create_user_with_email_and_password(payload.email, payload.password)
         return {"message": "Tạo tài khoản thành công"}
     except Exception as e:
@@ -44,6 +42,7 @@ def signup(payload: SignupRequest):
 @router.post("/login")
 def login(payload: LoginRequest):
     try:
+        auth_client = get_auth_client()
         user = auth_client.sign_in_with_email_and_password(payload.email, payload.password)
         return {
             "email": payload.email,
@@ -82,10 +81,7 @@ def google_start():
         "prompt": "select_account",
     }
 
-    google_auth_url = (
-        "https://accounts.google.com/o/oauth2/v2/auth?"
-        + urlencode(params)
-    )
+    google_auth_url = "https://accounts.google.com/o/oauth2/v2/auth?" + urlencode(params)
 
     response = RedirectResponse(url=google_auth_url, status_code=302)
     response.set_cookie(
@@ -130,10 +126,7 @@ def google_callback(
     )
 
     if not token_resp.ok:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Failed to exchange Google code: {token_resp.text}"
-        )
+        raise HTTPException(status_code=400, detail=f"Failed to exchange Google code: {token_resp.text}")
 
     token_data = token_resp.json()
     google_id_token = token_data.get("id_token")
@@ -156,10 +149,7 @@ def google_callback(
     )
 
     if not firebase_resp.ok:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Failed to sign in with Firebase Google provider: {firebase_resp.text}"
-        )
+        raise HTTPException(status_code=400, detail=f"Firebase Google sign-in failed: {firebase_resp.text}")
 
     firebase_data = firebase_resp.json()
     firebase_id_token = firebase_data.get("idToken")
@@ -168,9 +158,9 @@ def google_callback(
         raise HTTPException(status_code=400, detail="Firebase did not return idToken")
 
     separator = "&" if "?" in FRONTEND_URL else "?"
-    redirect_to_frontend = f"{FRONTEND_URL}{separator}{urlencode({'id_token': firebase_id_token})}"
+    redirect_url = f"{FRONTEND_URL}{separator}{urlencode({'id_token': firebase_id_token})}"
 
-    response = RedirectResponse(url=redirect_to_frontend, status_code=302)
+    response = RedirectResponse(url=redirect_url, status_code=302)
     response.delete_cookie("google_oauth_state", path="/")
     return response
 

@@ -1,8 +1,6 @@
 from fastapi import Header, HTTPException
 from firebase_admin import auth as admin_auth
- 
-# FIX BUG 2: Dùng app.xxx thay vì backend.app.xxx
-from app.core.firebase_config import init_firebase_admin
+from backend.app.core.firebase_config import init_firebase_admin
  
  
 def get_current_user(authorization: str = Header(...)):

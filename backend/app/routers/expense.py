@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
-from app.schemas.expense import ExpenseCreate
-from app.services import expense_service
-from app.dependencies.auth import get_current_user
+
+from backend.app.schemas.expense import ExpenseCreate
+from backend.app.services import expense_service
+from backend.app.dependencies.auth import get_current_user
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
