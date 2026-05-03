@@ -73,3 +73,4 @@
 3. Ứng dụng sẽ tự động mở trên trình duyệt tại: http://localhost:8501
 
 ### **🎥 Video demo
+https://github.com/user-attachments/assets/79190465-fcca-4388-8af8-3c233df6f57f
